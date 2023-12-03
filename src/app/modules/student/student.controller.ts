@@ -16,7 +16,7 @@ const getAllStudents = catchAsync(async (req, res) => {
 })
 
 const getSingleStudent = catchAsync(async (req, res) => {
-  const studentId = req.params.studentId
+  const { studentId } = req.params
   const student = await StudentServices.getSingleStudentFromDB(studentId)
 
   sendResponse(res, {

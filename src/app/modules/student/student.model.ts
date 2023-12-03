@@ -14,17 +14,6 @@ const userNameSchema = new Schema<TUserName>({
     trim: true,
     required: [true, 'First name is required'],
     maxlength: [20, 'First Name can not be more than 20 characters'],
-    // validate: {
-    //   validator: function (value: string) {
-    //     const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1)
-    //     // if (value === firstNameStr) {
-    //     //   return false
-    //     // }
-    //     // return true
-    //     return firstNameStr === value
-    //   },
-    //   message: '{VALUE} is not in capitalize format',
-    // },
   },
   middleName: { type: String, trim: true },
 
@@ -99,7 +88,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: true,
     },
     dateOfBirth: {
-      type: String,
+      type: Date,
     },
     email: {
       type: String,
