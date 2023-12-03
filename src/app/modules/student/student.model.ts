@@ -5,9 +5,8 @@ import {
   TStudent,
   StudentModel,
   TUserName,
+  TLocalGuardian,
 } from './student.interface'
-import bcrypt from 'bcrypt'
-import config from '../../config'
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -57,7 +56,7 @@ const guardianSchema = new Schema<TGuardian>({
   },
 })
 
-const LocalGuardianSchema = new Schema({
+const LocalGuardianSchema = new Schema<TLocalGuardian>({
   name: { type: String, required: [true, 'Local guardian name is required'] },
   occupation: {
     type: String,
@@ -80,7 +79,13 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'student id is required'],
       unique: true,
     },
-    password: { type: String, required: [true, 'Password is required'] },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'user id is required'],
+      unique: true,
+      ref: 'User',
+    },
+
     name: {
       type: userNameSchema,
       required: true,
@@ -108,14 +113,15 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     },
     presentAddress: { type: String, required: true },
     permanentAddress: { type: String, required: true },
-    guardian: { type: guardianSchema, required: true },
-    localGuardian: { type: LocalGuardianSchema, required: true },
-    profileImg: { type: String },
-    isActive: {
-      type: String,
-      enum: ['active', 'blocked'],
-      default: 'active',
+    guardian: {
+      type: guardianSchema,
+      required: [true, 'Guardian information is required!'],
     },
+    localGuardian: {
+      type: LocalGuardianSchema,
+      required: [true, 'Local guardian information is required!'],
+    },
+    profileImg: { type: String },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -129,24 +135,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 // virtual
 studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
-})
-
-// pre save middleware hook
-studentSchema.pre('save', async function (next) {
-  const user = this
-
-  // hashing password and save into DB
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  )
-  next()
-})
-
-// post middleware hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = ''
-  next()
 })
 
 // Query Middleware
