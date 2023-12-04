@@ -88,7 +88,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: true,
     },
     dateOfBirth: {
-      type: Date,
+      type: String,
     },
     email: {
       type: String,
@@ -113,7 +113,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     profileImg: { type: String },
     addmissionSemester: {
       type: Schema.Types.ObjectId,
-      ref: 'AcademicSemester',
+      ref: 'TAcademicSemester',
     },
     isDeleted: {
       type: Boolean,
