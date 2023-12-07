@@ -1,3 +1,5 @@
+import httpStatus from 'http-status'
+import AppError from '../../errors/AppError'
 import { academicSemesterCodeMapper } from './academicSemester.constant'
 import {
   TAcademicSemester,
@@ -31,7 +33,7 @@ const updateAcademicSemesterIntoDB = async (
     payload.code &&
     academicSemesterCodeMapper[payload.name] !== payload.code
   ) {
-    throw new Error('Invalid Semester Code')
+    throw new AppError(httpStatus.NOT_FOUND, 'Invalid Semester Code')
   }
 
   const result = await AcademicSemester.findOneAndUpdate({ _id: id }, payload, {
